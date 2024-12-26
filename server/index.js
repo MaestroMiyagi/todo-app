@@ -11,6 +11,9 @@ const isDev = process.env.NODE_ENV !== 'production';
 
 app.use(express.json());
 
+// Serve static files from the dist directory first
+app.use(express.static(join(__dirname, '../dist')));
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
@@ -61,14 +64,10 @@ app.delete('/api/todos/:id', (req, res) => {
   res.status(204).send();
 });
 
-// In development, let Vite handle the static files
-if (!isDev) {
-  app.use(express.static(join(__dirname, '../dist')));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(join(__dirname, '../dist/index.html'));
-  });
-}
+// Handle all other routes by serving index.html
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, '../dist/index.html'));
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
