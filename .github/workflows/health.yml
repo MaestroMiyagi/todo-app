@@ -1,0 +1,27 @@
+name: Service Health Check
+
+on:
+  schedule:
+    - cron: "0 */8 * * *"
+  workflow_dispatch: 
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://todo-app-ogy2.onrender.com/health
+      - name: Notify service is healthy
+        if: success()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"content": "✅ Service is healthy: https://todo-app-ogy2.onrender.com/health"}' \
+          ${{ secrets.YOUR_DISCORD_WEBHOOK_URL }}
+      - name: Notify service is unhealthy
+        if: failure()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"content": "🚨 Service check failed! Please investigate: https://todo-app-ogy2.onrender.com/health"}' \
+          ${{ secrets.YOUR_DISCORD_WEBHOOK_URL }}
