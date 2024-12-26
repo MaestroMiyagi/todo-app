@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import "@testing-library/jest-dom/extend-expect";
 import { render, screen, fireEvent } from "@testing-library/react";
 import App from "../App";
 import React from "react";
@@ -32,9 +33,7 @@ describe("App", () => {
     const toggleButton = screen.getByTestId("toggle-todo");
     fireEvent.click(toggleButton);
 
-    expect(screen.getByText("Test Todo")).toHaveStyle(
-      "text-decoration: line-through"
-    );
+    expect(screen.getByText("Test Todo")).toHaveClass("completed");
   });
 
   it("deletes a todo", () => {
