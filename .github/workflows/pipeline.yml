@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Check Style
-        run: npm run eslint
+        run: npm run lint
       - run: npm run build
       - name: Notify build failure
         if: failure()
